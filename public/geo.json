@@ -1,0 +1,28 @@
+{
+  "type": "FeatureCollection",
+  "features": 
+    [{
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [14.050891891629185, 66.28588139488897]
+        },
+        "properties":{
+          "id": "LA6TRA",
+          "name": "Hans",
+          "hash": "355efef0727e63f5bf118214bbc808ea"
+       }
+    },
+    {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [14.208149809522629, 66.32255415670363]
+        },
+        "properties":{
+          "id": "LA3M",
+          "name": "Mo gruppen av NRRL",
+          "hash": "5c0806a0dd6d556b0e1355d34f5c3972"
+       }
+    }]
+}
