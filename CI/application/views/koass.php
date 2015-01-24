@@ -253,6 +253,7 @@
 //		features: features
     });
     var APRSfi = new ol.layer.Vector({
+	  name: "koass_APRSlayer",
       source: aprsSource
    });
     map.addLayer(APRSfi);
@@ -315,6 +316,18 @@
 	  });
 	}
 	map.on('moveend', getLayerDataAPRS);
- 	</script>
+	
+	// PopUp'n stuff
+	map.on('click', function(e) {
+		map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
+			// do something with "feature" and "layer"
+		//	console.log("Fant: "+feature+" @: "+layer);
+		if(ObjektNavn = feature.p.properties.name) {
+			console.log(ObjektNavn+" @ "+layer.p.name);
+		}
+		});
+	})	
+	
+	</script>
 	</body>
 </html>
