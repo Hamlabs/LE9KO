@@ -12,6 +12,13 @@ class Welcome extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->view('koass');
 	}
+
+	function trackme()
+	{
+		$this->load->helper('url');
+		$this->load->view('trackme');
+	}
+
 }
 
 /* End of file welcome.php */
