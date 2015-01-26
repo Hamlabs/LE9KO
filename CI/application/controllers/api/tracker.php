@@ -38,7 +38,7 @@ class tracker extends REST_Controller
         	$this->response(NULL, 400);
         }
 		
-        if(!empty($this->get('lat')) && !empty($this->get('lon')) && !empty($this->get('acc')))
+        if(!empty($_GET['lat']) && !empty($_GET['lon']) && !empty($_GET['acc']))
         {
             $this->response(array(), 200); // 200 being the HTTP response code
         }
