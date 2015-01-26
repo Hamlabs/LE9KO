@@ -151,7 +151,12 @@ timestamp	DOMTimeStamp	like a Date() object
       }
       
       // PIN kreves for SAR (for å legges i rett ressursgruppe), men er ellers ikke obligatorisk?
-      if(!PINCODE) {}
+      if(!PINCODE) {
+        for(var i=0; i<4; i++) {
+          PINCODE += Math.floor(Math.random()*16).toString(16).toUpperCase();
+        }
+        $('#PIN').val(PINCODE);
+      }
 
       if ("geolocation" in navigator) { // navigator && navigator.geolocation
         geoID = navigator.geolocation.watchPosition(le9mobil_track, errorCallback, le9mobil_geoSettings);
