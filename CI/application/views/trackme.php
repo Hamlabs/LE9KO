@@ -176,6 +176,21 @@ timestamp	DOMTimeStamp	like a Date() object
   Halvhjertet forsøk på å bry seg om error's
  */
 	function errorCallback() {
+    // Finn på noe lurt
+    if (err.code == 0) {
+        // Unknown error
+    }
+    if (err.code == 1) {
+        // Access denied by user
+    }
+    if (err.code == 2) {
+        // Position unavailable
+    }
+    if (err.code == 3) {
+        // Timed out
+    }
+
+  // Pop feil	
     alert('code: ' + error.code + '\n' +
         'message: ' + error.message + '\n');
 	}
