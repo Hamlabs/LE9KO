@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="/css/ol.css" />
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap-slider.css" />
     <link rel="stylesheet" href="/css/font-awesome.min.css" />
     <link rel="stylesheet" href="/css/koass_webui.css" />
+    <link rel="stylesheet" href="/css/koass_layertree.css" />
 
   </head>
   <body>
-    <div class="container">
+    <div class="container"><input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>
 	</div>
       <div id="mapDiv">
       </div>
@@ -117,7 +119,8 @@
                 </h4>
               </div>
               <div id="properties" class="panel-collapse collapse in">
-				<div class="panel-body list-group">
+                <div class="row"><div  id="layertree" class="tree"></div></div>
+				        <div class="panel-body list-group">
                   <a href="#" class="list-group-item">
                     <i class="fa fa-circle"></i> Lat/Long: 
                   </a>
@@ -194,6 +197,7 @@
 	<script type="text/javascript" src="/js/ol.js" /></script>
 	<script type="text/javascript" src="/js/jquery-2.1.3.min.js"></script>
 	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-slider.js"></script>
 	<script type="text/javascript" src="/js/jquery.websocket.js"></script>
 	<script type="text/javascript" src="/js/jquery.mqsocket.js"></script>
 	<script type="text/javascript" src="/js/jquery.md5.js"></script>
@@ -256,7 +260,7 @@
 	  name: "koass_APRSlayer",
       source: aprsSource
    });
-    map.addLayer(APRSfi);
+   poiLayers.getLayers().push(APRSfi);;
 
 	// Oppdater vektorlag med posisjoner
 
@@ -327,6 +331,35 @@
 		}
 		});
 	})	
+	
+	// Fyr layertree stuff
+  $(document).ready(function() {
+
+      initializeTree();
+
+      // Handle opacity slider control
+      $('input.opacity').slider().on('slide', function(ev) {
+          var layername = $(this).closest('li').data('layerid');
+          var layer = findBy(map.getLayerGroup(), 'name', layername);
+
+          layer.setOpacity(ev.value);
+      });
+
+      // Handle visibility control
+      $('i').on('click', function() {
+          var layername = $(this).closest('li').data('layerid');
+          var layer = findBy(map.getLayerGroup(), 'name', layername);
+
+          layer.setVisible(!layer.getVisible());
+
+          if (layer.getVisible()) {
+              $(this).removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+          } else {
+              $(this).removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+          }
+      });
+
+  });
 	
 	</script>
 	</body>
