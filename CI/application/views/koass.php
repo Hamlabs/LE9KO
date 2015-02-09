@@ -122,16 +122,19 @@
                 <div class="row"><div  id="layertree" class="tree"></div></div>
 				        <div class="panel-body list-group">
                   <a href="#" class="list-group-item">
-                    <i class="fa fa-circle"></i> Lat/Long: 
+                    <i class="fa fa-circle"></i> Lat/Long: <span id="xy4326">0,0</span>
                   </a>
                   <a href="#" class="list-group-item">
-                    <i class="fa fa-circle"></i> UTM / MGRS
+                    <i class="fa fa-circle"></i> UTM: <span id="xyUTM">0</span>
                   </a>
                   <a href="#" class="list-group-item">
-                    <i class="fa fa-circle"></i> Høyde
+                    <i class="fa fa-circle"></i> MGRS: <span id="xyMGRS">0</span>
                   </a>
                   <a href="#" class="list-group-item">
-                    <i class="fa fa-circle"></i> Nærmeste POI
+                    <i class="fa fa-circle"></i> Høyde: <span id="xyHEIGHT">0</span>
+                  </a>
+                  <a href="#" class="list-group-item">
+                    <i class="fa fa-circle"></i> Nærmeste POI: <span id="closestPOI">..</span>
                   </a>
                 </div>
               </div>
@@ -208,6 +211,7 @@
 	<script type="text/javascript" src="/js/koass_ol3_tmp.js"></script>
 	<script type="text/javascript" src="/js/koass_iconSets.js"></script>
 	<script type="text/javascript" src="/js/koass_aprsSymbols.js"></script>
+	<script type="text/javascript" src="/js/koass_MGRS.js"></script>
     <script type="text/javascript">
 	//#########################################################################
 	// Debugging
@@ -256,15 +260,19 @@
 		name: "aprsSource",
 //		features: features
     });
-    var APRSfi = new ol.layer.Vector({
+    var koass_APRSlayer = new ol.layer.Vector({
 	  name: "koass_APRSlayer",
       source: aprsSource
    });
-   poiLayers.getLayers().push(APRSfi);;
+   poiLayers.getLayers().push(koass_APRSlayer);;
 
 	// Oppdater vektorlag med posisjoner
 
 	function getLayerDataAPRS(evt) {
+	
+		// Fjern eksisterende punkter
+		koass_APRSlayer.getSource().clear();
+	
 		// Jøgle koordinater
 		koass_mapBoxCoords	= map.getView().calculateExtent( map.getSize() );
 		koass_mapBoxLL1		= ol.proj.transform([koass_mapBoxCoords[0],koass_mapBoxCoords[1]], 'EPSG:3857', 'EPSG:4326');
@@ -320,6 +328,62 @@
 	  });
 	}
 	map.on('moveend', getLayerDataAPRS);
+	
+	
+	
+	
+	/*
+	Gir informasjon om snadder ved musepeker.
+	*/
+	map.on('pointermove', function(event) {
+		var xy4326 = ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326');
+//		var xyMGRS = le9ko_LLtoMGRS(ol.proj.transform(event.coordinate, 'EPSG:3857', 'EPSG:4326'));
+		
+		$('#xy4326').text('N'+xy4326[1].toString().substring(0,6)+' Ø'+xy4326[0].toString().substring(0,6));
+    var coordArray = [];
+		LE9KO_LLtoUTM(xy4326[1],xy4326[0],coordArray);
+		$('#xyUTM').text(coordArray[2]+' '+Math.round(coordArray[0])+' '+Math.round(coordArray[1]));
+		$('#xyMGRS').text(LE9KO_LLtoUSNG(xy4326[1],xy4326[0],5));
+		
+		//Hent enheter nærmest peker?
+		Navn = nearest_feature(event.coordinate);
+		$('#closestPOI').text(Navn);
+	});
+	
+	// Hjelpefunc for å finne nærmeste punkt
+	function nearest_feature(pointA) {
+	  pointA = ol.proj.transform(pointA, 'EPSG:3857', 'EPSG:4326');
+  	var features = aprsSource.getFeatures();
+  	var pointB   = 0;
+  	var distance = 0;
+  	var tmpDist  = 0;
+  	var ii       = 0;
+  	var arr      = [];
+  	var closestCall = '';
+  	
+  	// Loop igjennom alle features på aprs-layer å finn den nærmest pekeren
+    for(var i=0; i < features.length; i++) {
+      pointB  = ol.proj.transform([features[i].getGeometry().extent[0],features[i].getGeometry().extent[1]], 'EPSG:3857', 'EPSG:4326');
+      //tmpDist = ol.sphere.WGS84.haversineDistance(pointA,pointB);
+			distance = koass_getDistance([pointA[1],pointA[0]],[pointB[1],pointB[0]]);
+			distance = distance*1;
+      //arr[distance] = features[i].p.properties.name
+     
+      if (distance < tmpDist || !tmpDist) {
+        tmpDist = distance;
+        closestCall = features[i].p.properties.name
+      }
+     }
+    
+    // Sorter i stigende rekkefølge
+    arr.sort();
+
+	return closestCall+' ('+Math.round(tmpDist*1000)+' m)';
+	}
+		
+	
+	
+	
 	
 	// PopUp'n stuff
 	map.on('click', function(e) {

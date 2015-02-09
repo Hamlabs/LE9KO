@@ -6,10 +6,9 @@ function koass_getDistance(latlon1,latlon2,unit,cutDecimal) {
 
 	// Assign vars
 	var lat1 = latlon1[0]
-	var lng1 = latlon1[1]
+	var lon1 = latlon1[1]
 	var lat2 = latlon2[0]
-	var lng2 = latlon2[1]
-
+	var lon2 = latlon2[1]
 
   // Converts degrees to Rads
   if (typeof(Number.prototype.toRad) === "undefined") {
@@ -26,7 +25,7 @@ function koass_getDistance(latlon1,latlon2,unit,cutDecimal) {
 	}
 		
 	var dLat = (parseFloat(lat2)-parseFloat(lat1)).toRad();
-	var dLon = (parseFloat(lng2)-parseFloat(lng1)).toRad();
+	var dLon = (parseFloat(lon2)-parseFloat(lon1)).toRad();
 	var lat1 = parseFloat(lat1).toRad();
 	var lat2 = parseFloat(lat2).toRad();
 
@@ -35,7 +34,7 @@ function koass_getDistance(latlon1,latlon2,unit,cutDecimal) {
 	var d = R * c;
 
 	if (cutDecimal === false) {
-		return d;
+		return d.toFixed(4);
 	} else {
 		return Math.round(d);
 	}

@@ -155,21 +155,32 @@ map.addLayer(mapLayers);
 	    mapLayersOSM.getLayers().push(mapLayerOSM_Land);
 
 	    //## mapLayerOSM_Sea
-      var mapLayerOSM_Sea = new ol.layer.Tile({
-	      name: "OpenSeaMap",
-        source: new ol.source.OSM({
-          attributions: [
-            new ol.Attribution({
-              html: 'All maps &copy; ' +
-                  '<a href="http://www.openseamap.org/">OpenSeaMap</a>'
-            }),
-            ol.source.OSM.DATA_ATTRIBUTION
-          ],
-          crossOrigin: null,
-          url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
-        })
-      });
+		var mapLayerOSM_Sea = new ol.layer.Tile({
+			name: "OpenSeaMap",
+			source: new ol.source.OSM({
+			  attributions: [
+				new ol.Attribution({
+				  html: 'All maps &copy; ' +
+					  '<a href="http://www.openseamap.org/">OpenSeaMap</a>'
+				}),
+				ol.source.OSM.DATA_ATTRIBUTION
+			  ],
+			  crossOrigin: null,
+			  url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
+			})
+		});
 	    mapLayersOSM.getLayers().push(mapLayerOSM_Sea);
+
+	    //## mapLayerOSM_Land
+	    var mapLayerOSM_Weather = new ol.layer.Tile({
+	      name: "OpenWeatherMap",
+	      source: new ol.source.OSM({
+			crossOrigin: null,
+			url: 'http://undefined.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png'
+		  }),
+	      opacity: 0.4
+	    });
+	    mapLayersOSM.getLayers().push(mapLayerOSM_Weather);
 
 
 
@@ -178,12 +189,12 @@ map.addLayer(mapLayers);
 
 	//## mapLayerBing ######################## //
 	var BingKey = 'AsCDnmotrTbJLIe2pslxg1olzZKr435tgIC2DS5NJUsqQuGP0tQ8euAEMifP_yjm';
-  var mapLayersBing = new ol.layer.Group({
+	var mapLayersBing = new ol.layer.Group({
 	  id: "mapLayersBing",
 	  name:"mapLayersBing",
-    visible: false
-  });
-  mapLayers.getLayers().push(mapLayersBing);
+	visible: false
+	});
+	mapLayers.getLayers().push(mapLayersBing);
 
 	    //## mapLayerBing_Road
 	    var mapLayerBing_Road = new ol.layer.Tile({
@@ -305,11 +316,48 @@ var infoLayers = new ol.layer.Group({
 });
 map.addLayer(infoLayers);
 
+	// ## OpenWeatherMap
+	API_KEY = "cdf7625e7b6ef02a70b345ba6b090e7e";
+ 	var infoLayerWeather = new ol.layer.Group({
+	  id: "infoLayerWeather",
+	  name:"infoLayerWeather",
+	visible: true
+	});
+	infoLayers.getLayers().push(infoLayerWeather);
 
 
-
-
-
+	    //## infoLayerWeather_precipitation
+	    var infoLayerWeather_precipitation = new ol.layer.Tile({
+			name: "OWM_Precipitation",
+			source: new ol.source.TileWMS({
+				url:  'http://wms.openweathermap.org/service',
+				projection: projection,
+				params: {
+					'CRS': 'EPSG:4326',
+					'LAYERS': 'precipitation',
+					'TRANSPARENT': 'true'
+				},
+				tileGrid: new ol.tilegrid.TileGrid({ 
+					  origin: ol.extent.getTopLeft(projectionExtent),
+					  resolutions: resolutions,
+					  matrixIds: matrixIds
+				})
+			})
+	    });
+	    infoLayerWeather.getLayers().push(infoLayerWeather_precipitation);
+/*
+	    //## infoLayerWeather_precipitation
+	    var infoLayerWeather_precipitation2 = new ol.layer.Tile({
+			name: "OWM_Precipitation2",
+			projection: 'EPSG:4326',
+			source: new ol.source.XYZ({
+				projection: 'EPSG:4326',
+				url:  'http://${s}.tile.openweathermap.org/map/precipitation/${z}/${x}/${y}.png',
+			}),
+	    });
+	    infoLayerWeather.getLayers().push(infoLayerWeather_precipitation2);
+*/
+		
 //### poiLayers ############################################### //
 var poiLayers = new ol.layer.Group({
   id: "poiLayers",

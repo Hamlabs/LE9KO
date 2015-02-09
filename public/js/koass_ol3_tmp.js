@@ -1,7 +1,7 @@
 //#########################################################################
 // GeoJSON
   var styleCache = {};
-  var aprsLayer = new ol.layer.Vector({
+  var koass_geoJSON = new ol.layer.Vector({
       name : "koass_geoJSON",
       source : new ol.source.GeoJSON({
 		    projection : 'EPSG:3857',
@@ -43,7 +43,7 @@
 		    return styleCache[text];
 	  }
   });
-	poiLayers.getLayers().push(aprsLayer);
+	poiLayers.getLayers().push(koass_geoJSON);
 	
 
 //#########################################################################
@@ -198,9 +198,10 @@ flyTilMo.addEventListener('click', function() {
   function buildLayerTree(layer) {
       var elem;
       var name = layer.get('name') ? layer.get('name') : "Group";
+	  var visi = layer.get('visible') ? "<i class='glyphicon glyphicon-check'></i> " : "<i class='glyphicon glyphicon-unchecked'></i> ";
       var div = "<li data-layerid='" + name + "'>" +
               "<span><i class='glyphicon glyphicon-file'></i> " + layer.get('name') + "</span>" +
-              "<i class='glyphicon glyphicon-check'></i> " +
+              visi +
               "<input style='width:80px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'></input>";
       if (layer.getLayers) {
           var sublayersElem = ''; 
